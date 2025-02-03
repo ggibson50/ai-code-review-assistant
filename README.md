@@ -1,15 +1,4 @@
-# 🚀 AI Code Review Assistant (Final Version)
-
-An **AI-powered code review tool** with **real-time collaboration, security & performance analysis, and GitHub CI/CD integration**.
-
-## **🎯 Features**
-✔ **GitHub OAuth Authentication** – Secure login via GitHub  
-✔ **AI-Powered Code Review (GPT-4)** – Detects best practices, security issues, and optimization opportunities  
-✔ **Security Vulnerability Detection** – AI-driven security scanning  
-✔ **Performance Optimization Suggestions** – AI-based performance insights  
-✔ **AI-Suggested Fixes with Explanations** – Automated code improvements  
-✔ **Real-time Collaboration** – WebSockets-based live code updates  
-✔ **GitHub CI/CD Integration** – AI-powered pull request reviews with inline comments  
+# 🚀 AI Code Review Assistant
 
 ---
 
