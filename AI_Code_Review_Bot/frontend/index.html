@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Code Review Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
+    <h1 class="text-2xl font-bold mb-4">AI Code Review Assistant</h1>
+
+    <textarea id="codeInput" class="w-2/3 h-40 p-2 border rounded shadow-lg" placeholder="Paste your code here..."></textarea>
+    <button id="submitBtn" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Analyze Code</button>
+
+    <div id="loading" class="mt-4 text-blue-500 hidden">Analyzing code... Please wait.</div>
+
+    <div id="results" class="w-2/3 mt-6 p-4 bg-white border rounded shadow-lg hidden">
+        <h2 class="text-lg font-semibold">Results:</h2>
+        
+        <div class="flex flex-col space-y-2">
+            <h3 class="text-md font-semibold mt-4 text-gray-700">Code Review:</h3>
+            <pre id="reviewOutput" class="p-2 bg-gray-200 rounded shadow-inner"></pre>
+        
+            <h3 class="text-md font-semibold mt-4 text-red-600">Security Issues:</h3>
+            <div class="relative">
+                <pre id="securityOutput" class="p-2 bg-red-100 border border-red-400 rounded shadow-inner"></pre>
+                <div id="securityIndicator" class="absolute top-0 right-0 bg-red-600 text-white px-2 py-1 rounded-bl hidden">!</div>
+            </div>
+        
+            <h3 class="text-md font-semibold mt-4 text-green-600">Performance Improvements:</h3>
+            <div class="relative">
+                <pre id="performanceOutput" class="p-2 bg-green-100 border border-green-400 rounded shadow-inner"></pre>
+                <div id="performanceIndicator" class="absolute top-0 right-0 bg-green-600 text-white px-2 py-1 rounded-bl hidden">✔</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            const code = document.getElementById('codeInput').value;
+            const loadingIndicator = document.getElementById('loading');
+            const resultsSection = document.getElementById('results');
+            const securityIndicator = document.getElementById('securityIndicator');
+            const performanceIndicator = document.getElementById('performanceIndicator');
+
+            loadingIndicator.classList.remove('hidden');
+            resultsSection.classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/analyze/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer YOUR_ACCESS_TOKEN'
+                    },
+                    body: JSON.stringify({ code })
+                });
+
+                const data = await response.json();
+
+                document.getElementById('reviewOutput').textContent = data.review || "No review available.";
+                document.getElementById('securityOutput').textContent = data.security || "No security issues detected.";
+                document.getElementById('performanceOutput').textContent = data.performance || "No performance recommendations.";
+
+                loadingIndicator.classList.add('hidden');
+                resultsSection.classList.remove('hidden');
+
+                // Show indicators for security and performance
+                securityIndicator.classList.toggle('hidden', !data.security || data.security.trim() === "No security issues detected.");
+                performanceIndicator.classList.toggle('hidden', !data.performance || data.performance.trim() === "No performance recommendations.");
+
+            } catch (error) {
+                console.error("Error analyzing code:", error);
+                loadingIndicator.textContent = "Error analyzing code. Please try again.";
+            }
+        });
+    </script>
+</body>
+</html>
